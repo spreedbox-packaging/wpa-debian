@@ -315,3 +315,6 @@ CONFIG_TESTING_OPTIONS=y
 # http://wireless.kernel.org/en/users/Documentation/acs
 #
 CONFIG_ACS=y
+
+# Enable RTL8188CUS driver (patch from https://github.com/pritambaral/hostapd-rtl871xdrv/tree/hostapd_2_4)
+CONFIG_DRIVER_RTW=y

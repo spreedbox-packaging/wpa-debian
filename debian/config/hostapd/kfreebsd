@@ -322,3 +322,6 @@ CONFIG_TESTING_OPTIONS=y
 # on !CONFIG_DRIVER_BSD, while it is actually depending on the target libc
 # rather than the kernel.
 LIBS += -ldl
+
+# Enable RTL8188CUS driver (patch from https://github.com/pritambaral/hostapd-rtl871xdrv/tree/hostapd_2_4)
+CONFIG_DRIVER_RTW=y
