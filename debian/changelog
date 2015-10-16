@@ -1,3 +1,11 @@
+wpa (2.4-0ubuntu3+0rtl871xdrv) vivid; urgency=medium
+
+  * Backport to vivid.
+  * Added Hostapd driver for RTL8188{C|CU|CUS} wifi chips from
+    https://github.com/pritambaral/hostapd-rtl871xdrv/tree/hostapd_2_4 
+
+ -- Simon Eisenmann <simon@struktur.de>  Fri, 16 Oct 2015 17:05:58 +0200
+
 wpa (2.4-0ubuntu3) wily; urgency=medium
 
   * debian/patches/dbus-fix-operations-for-p2p-mgmt.patch: fix operations
