@@ -1,3 +1,10 @@
+wpa (2.4-0ubuntu3+1rtl871xdrv) trusty; urgency=low
+
+  * Removed unnecessary Android patch.
+  * Backported to trusty.
+
+ -- Joachim Bauch <bauch@struktur.de>  Fri, 11 Dec 2015 17:16:43 +0100
+
 wpa (2.4-0ubuntu3+0rtl871xdrv) vivid; urgency=medium
 
   * Backport to vivid.
