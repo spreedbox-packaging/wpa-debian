@@ -46,5 +46,11 @@ for CTRL in /run/wpa_supplicant/*; do
 
 	if wpa_action "${IFACE}" check; then
 		wpa_cli -i "${IFACE}" "${COMMAND}"
+		if [ "${COMMAND}" = "disconnect" ] ; then
+			d=$(ip route list | grep default | cut -d" " -f5)
+			while [ "x$d" = "x${IFACE}" ]; do
+				d=$(ip route list | grep default | cut -d" " -f5)
+			done
+		fi
 	fi
 done
