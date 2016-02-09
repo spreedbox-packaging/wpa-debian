@@ -12,4 +12,10 @@ CVE-2015-4141.patch
 CVE-2015-4142.patch
 CVE-2015-4143-4146.patch
 dbus-fix-operations-for-p2p-mgmt.patch
+CVE-2015-5310.patch
+CVE-2015-5315-1.patch
+CVE-2015-5315-2.patch
+CVE-2015-5316.patch
+CVE-2015-8041.patch
+wpasupplicant_band_selection_aa517ae2.patch
 rtlxdrv.patch
