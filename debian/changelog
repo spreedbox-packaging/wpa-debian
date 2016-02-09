@@ -1,3 +1,9 @@
+wpa (2.4-0ubuntu6+0rtl871xdrv) trusty; urgency=medium
+
+  * Merged with latest upstream patches and backported to trusty.
+
+ -- Simon Eisenmann <simon@struktur.de>  Tue, 09 Feb 2016 12:00:18 +0100
+
 wpa (2.4-0ubuntu6) xenial; urgency=medium
 
   * debian/patches/wpasupplicant_band_selection_aa517ae2.patch: add the last
