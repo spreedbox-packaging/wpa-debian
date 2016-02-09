@@ -1,8 +1,9 @@
-wpa (2.4-0ubuntu6+0rtl871xdrv) trusty; urgency=medium
+wpa (2.4-0ubuntu6+1rtl871xdrv) trusty; urgency=medium
 
   * Merged with latest upstream patches and backported to trusty.
+  * Fixed ifupdown post script recursion when using wpa supplicant with roaming by running ifup in clean environment.
 
- -- Simon Eisenmann <simon@struktur.de>  Tue, 09 Feb 2016 12:00:18 +0100
+ -- Simon Eisenmann <simon@struktur.de>  Tue, 09 Feb 2016 12:12:38 +0100
 
 wpa (2.4-0ubuntu6) xenial; urgency=medium
 
