@@ -10,7 +10,7 @@
 # This file is provided by the wpasupplicant package.
 
 #####################################################################
-# Copyright (C) 2006 - 2009 Debian/Ubuntu wpasupplicant Maintainers 
+# Copyright (C) 2006 - 2009 Debian/Ubuntu wpasupplicant Maintainers
 # <pkg-wpa-devel@lists.alioth.debian.org>
 #
 # This program is free software; you can redistribute it and/or
@@ -105,8 +105,8 @@ wpa_msg () {
 		esac
 		return
 	fi
-	
-	case "$1" in 
+
+	case "$1" in
 		"verbose")
 			shift
 			echo "$WPA_SUP_PNAME: $@" >$TO_NULL
@@ -140,15 +140,15 @@ wpa_msg () {
 test_daemon_pidfile () {
 	local DAEMON
 	local PIDFILE
-	
+
 	if [ -n "$1" ]; then
 		DAEMON="$1"
 	fi
-	
+
 	if [ -f "$2" ]; then
 		PIDFILE="$2"
 	fi
-	
+
 	if [ -n "$DAEMON" ] && [ -f "$PIDFILE" ]; then
 		if start-stop-daemon --stop --quiet --signal 0 \
 			--exec "$DAEMON" --pidfile "$PIDFILE"; then
@@ -260,7 +260,7 @@ init_wpa_supplicant () {
 	fi
 
 	wpa_msg verbose "$WPA_SUP_BIN $WPA_SUP_OPTIONS $WPA_SUP_CONF"
-		
+
 	start-stop-daemon --start --oknodo $DAEMON_VERBOSITY \
 		--name $WPA_SUP_PNAME --startas $WPA_SUP_BIN --pidfile $WPA_SUP_PIDFILE \
 		-- $WPA_SUP_OPTIONS $WPA_SUP_CONF
@@ -303,11 +303,11 @@ init_wpa_supplicant () {
 			wpa_msg verbose "waiting for \"$WPA_CTRL_DIR/$WPA_IFACE\": " \
 				"$WPA_SOCKET_WAIT (max. $MAX_WPA_SOCKET_WAIT)"
 		fi
-		
+
 		WPA_SOCKET_WAIT=$(($WPA_SOCKET_WAIT + 1))
 		sleep 1
 	done
-	
+
 	wpa_msg verbose "ctrl_interface socket located at $WPA_CTRL_DIR/$WPA_IFACE"
 }
 
@@ -366,7 +366,7 @@ init_wpa_cli () {
 	WPA_CLI_OPTIONS="-B -P $WPA_CLI_PIDFILE -i $WPA_IFACE"
 
 	wpa_msg verbose "$WPA_CLI_BIN $WPA_CLI_OPTIONS -p $WPA_CTRL_DIR -a $WPA_ACTION_SCRIPT"
-		
+
 	start-stop-daemon --start --oknodo $DAEMON_VERBOSITY \
 		--name $WPA_CLI_PNAME --startas $WPA_CLI_BIN --pidfile $WPA_CLI_PIDFILE \
 		-- $WPA_CLI_OPTIONS -p $WPA_CTRL_DIR -a $WPA_ACTION_SCRIPT
@@ -384,12 +384,12 @@ init_wpa_cli () {
 #
 kill_wpa_cli () {
 	test_wpa_cli || return 0
-	
+
 	wpa_msg verbose "terminating $WPA_CLI_PNAME daemon via pidfile $WPA_CLI_PIDFILE"
-	
+
 	start-stop-daemon --stop --oknodo $DAEMON_VERBOSITY \
 		--exec $WPA_CLI_BIN --pidfile $WPA_CLI_PIDFILE
-	
+
 	if [ -f "$WPA_CLI_PIDFILE" ]; then
 		rm -f "$WPA_CLI_PIDFILE"
 	fi
@@ -409,7 +409,7 @@ kill_wpa_cli () {
 #
 # $1	envorinment variable
 # $2	data type of variable {raw|ascii}
-# $3	wpa_cli variable, if $3 is set_network, shift and take 
+# $3	wpa_cli variable, if $3 is set_network, shift and take
 #	set_network subvariable
 # $4	wpa-* string as it would appear in interfaces file, enhances
 #	verbose messages
@@ -418,11 +418,11 @@ wpa_cli_do () {
 	if [ -z "$1" ]; then
 		return 0
 	fi
-	
+
 	local WPACLISET_VALUE
 	local WPACLISET_VARIABLE
 	local WPACLISET_DESC
-	
+
 	case "$2" in
 		ascii)
 			# Double quote
@@ -433,7 +433,7 @@ wpa_cli_do () {
 			WPACLISET_VALUE="$1"
 			;;
 	esac
-	
+
 	case "$3" in
 		set_network)
 			if [ -z "$WPA_ID" ]; then
@@ -446,7 +446,7 @@ wpa_cli_do () {
 			WPACLISET_VARIABLE="$3"
 			;;
 	esac
-	
+
 	case "$4" in
 		*-psk|*-passphrase|*-passwd*|*-password*|*-wep-key*)
 			WPACLISET_DESC="$4 *****"
@@ -457,7 +457,7 @@ wpa_cli_do () {
 	esac
 
 	wpa_msg action "$WPACLISET_DESC"
-	
+
 	wpa_cli $WPACLISET_VARIABLE "$WPACLISET_VALUE" >$TO_NULL
 
 	if [ "$?" -ne 0 ]; then
@@ -470,10 +470,10 @@ wpa_cli_do () {
 # returns 0 if input consists of hexadecimal digits only, 1 otherwise
 #
 ishex () {
-	if [ -z "$1" ]; then 
+	if [ -z "$1" ]; then
 		return 0
 	fi
-	
+
 	case "$1" in
 		*[!0-9a-fA-F]*)
 			# plaintext
@@ -491,7 +491,7 @@ ishex () {
 # Warn about strange psk|passphrase values
 #
 # $1	psk or passphrase value
-# 
+#
 # If psk is surrounded by quotes strip them.
 #
 # If psk contains all hexadecimal characters and string length is 64:
@@ -511,7 +511,7 @@ wpa_key_check_and_set () {
 	local KEY_LEN
 	local KEY_TYPE
 	local ENC_TYPE
-	
+
 	case "$1" in
 		'"'*'"')
 			# Strip surrounding quotation marks
@@ -607,16 +607,16 @@ conf_wpa_supplicant () {
 		# #403316, be similar to wireless tools
 		IF_WPA_SSID="$IF_WPA_ESSID"
 	fi
-	
+
 	wpa_cli_do "$IF_WPA_AP_SCAN" raw \
 		ap_scan wpa-ap-scan
-	
+
 	wpa_cli_do "$IF_WPA_PREAUTHENTICATE" raw \
 		preauthenticate wpa-preauthenticate
-		
+
 	if [ -n "$IF_WPA_SSID" ] || [ "$IF_WPA_DRIVER" = "wired" ] || \
 		[ -n "$IF_WPA_KEY_MGMT" ]; then
-		
+
 		case "$IF_WPA_SSID" in
 			'"'*'"')
 				IF_WPA_SSID=$(echo -n "$IF_WPA_SSID" | sed 's/^"//;s/"$//')
@@ -624,42 +624,42 @@ conf_wpa_supplicant () {
 			*)
 				;;
 		esac
-		
+
 		WPA_ID=$(wpa_cli add_network)
 
 		wpa_msg verbose "configuring network block -- $WPA_ID"
-		
+
 		wpa_cli_do "$IF_WPA_SSID" ascii \
 			set_network ssid wpa-ssid
-		
+
 		wpa_cli_do "$IF_WPA_PRIORITY" raw \
 			set_network priority wpa-priority
-		
+
 		wpa_cli_do "$IF_WPA_BSSID" raw \
 			set_network bssid wpa-bssid
-		
+
 		if [ -s "$IF_WPA_PSK_FILE" ]; then
 			IF_WPA_PSK=$(cat "$IF_WPA_PSK_FILE")
 		fi
-		
+
 		# remain compat with wpa-passphrase-file
 		if [ -s "$IF_WPA_PASSPHRASE_FILE" ]; then
 			IF_WPA_PSK=$(cat "$IF_WPA_PASSPHRASE_FILE")
 		fi
-		
+
 		# remain compat with wpa-passphrase
 		if [ -n "$IF_WPA_PASSPHRASE" ]; then
 			IF_WPA_PSK="$IF_WPA_PASSPHRASE"
 		fi
-	
+
 		if [ -n "$IF_WPA_PSK" ]; then
 			wpa_key_check_and_set "$IF_WPA_PSK" \
 				psk wpa-psk
 		fi
-		
+
 		wpa_cli_do "$IF_WPA_PAIRWISE" raw \
 			set_network pairwise wpa-pairwise
-		
+
 		wpa_cli_do "$IF_WPA_GROUP" raw \
 			set_network group wpa-group
 
@@ -674,28 +674,28 @@ conf_wpa_supplicant () {
 
 		wpa_cli_do "$IF_WPA_FREQ_LIST" raw \
 			set_network freq_list wpa-freq-list
-		
+
 		wpa_cli_do "$IF_WPA_KEY_MGMT" raw \
 			set_network key_mgmt wpa-key-mgmt
-		
+
 		wpa_cli_do "$IF_WPA_PROTO" raw \
 			set_network proto wpa-proto
-		
+
 		wpa_cli_do "$IF_WPA_AUTH_ALG" raw \
 			set_network auth_alg wpa-auth-alg
-		
+
 		wpa_cli_do "$IF_WPA_SCAN_SSID" raw \
 			set_network scan_ssid wpa-scan-ssid
-		
+
 		wpa_cli_do "$IF_WPA_IDENTITY" ascii \
 			set_network identity wpa-identity
-		
+
 		wpa_cli_do "$IF_WPA_ANONYMOUS_IDENTITY" ascii \
 			set_network anonymous_identity wpa-anonymous-identity
-		
+
 		wpa_cli_do "$IF_WPA_EAP" raw \
 			set_network eap wpa-eap
-		
+
 		wpa_cli_do "$IF_WPA_EAPPSK" raw \
 			set_network eappsk wpa-eappsk
 
@@ -719,7 +719,7 @@ conf_wpa_supplicant () {
 
 		wpa_cli_do "$IF_WPA_PRIVATE_KEY_PASSWD" ascii \
 			set_network private_key_passwd wpa-private-key-passwd
-		
+
 		wpa_cli_do "$IF_WPA_DH_FILE" ascii \
 			set_network dh_file wpa-dh-file
 
@@ -743,7 +743,7 @@ conf_wpa_supplicant () {
 
 		wpa_cli_do "$IF_WPA_PRIVATE_KEY_PASSWD2" ascii \
 			set_network private_key_passwd2 wpa-private-key-passwd2
-		
+
 		wpa_cli_do "$IF_WPA_DH_FILE2" ascii \
 			set_network dh_file2 wpa-dh-file2
 
@@ -752,7 +752,7 @@ conf_wpa_supplicant () {
 
 		wpa_cli_do "$IF_WPA_ALTSUBJECT_MATCH2" ascii \
 			set_network altsubject_match2 wpa-altsubject-match2
-		
+
 		wpa_cli_do "$IF_WPA_EAP_METHODS" raw \
 			set_network eap_methods wpa-eap-methods
 
@@ -779,12 +779,12 @@ conf_wpa_supplicant () {
 
 		wpa_cli_do "$IF_WPA_EAPOL_FLAGS" raw \
 			set_network eapol_flags wpa-eapol-flags
-		
+
 		if [ -n "$IF_WPA_WEP_KEY0" ]; then
 			wpa_key_check_and_set "$IF_WPA_WEP_KEY0" \
 				wep_key0 wpa-wep-key0
 		fi
-		
+
 		if [ -n "$IF_WPA_WEP_KEY1" ]; then
 			wpa_key_check_and_set "$IF_WPA_WEP_KEY1" \
 				wep_key1 wpa-wep-key1
@@ -799,25 +799,25 @@ conf_wpa_supplicant () {
 			wpa_key_check_and_set "$IF_WPA_WEP_KEY3" \
 				wep_key3 wpa-wep-key3
 		fi
-		
+
 		wpa_cli_do "$IF_WPA_WEP_TX_KEYIDX" raw \
 			set_network wep_tx_keyidx wpa-wep-tx-keyidx
-		
+
 		wpa_cli_do "$IF_WPA_PROACTIVE_KEY_CACHING" raw \
 			set_network proactive_key_caching wpa-proactive-key-caching
-			
+
 		wpa_cli_do "$IF_WPA_PAC_FILE" ascii \
 			set_network pac_file wpa-pac-file
-		
+
 		wpa_cli_do "$IF_WPA_PEERKEY" raw \
 			set_network peerkey wpa-peerkey
-			
+
 		wpa_cli_do "$IF_FRAGMENT_SIZE" raw \
 			set_network fragment_size wpa-fragment-size
 
 		wpa_cli_do "$IF_WPA_ID_STR" ascii \
 			set_network id_str wpa-id-str
-		
+
 		wpa_cli_do "$WPA_ID" raw \
 			enable_network "enabling network block"
 	fi
@@ -852,7 +852,7 @@ wpa_hysteresis_check () {
 		TIMEWAIT=$(($TIME-4))
 		# get time of last event
 		TIMESTAMP=$(cat $WPA_CLI_TIMESTAMP)
-		# compare values, allowing new action to be processed 
+		# compare values, allowing new action to be processed
 		# only if last action was more than 4 seconds ago
 		if [ "$TIMEWAIT" -le "$TIMESTAMP" ]; then
 			wpa_msg log "$WPA_ACTION event blocked by hysteresis check"
@@ -910,22 +910,22 @@ ifup () {
 	else
 		unset IFSTATE_FILE
 	fi
-	
+
 	if [ -z "$IF_WPA_MAPPING_SCRIPT_PRIORITY" ] && [ -n "$WPA_ID_STR" ]; then
 		WPA_LOGICAL_IFACE="$WPA_ID_STR"
 	fi
-	
+
 	if [ -z "$WPA_LOGICAL_IFACE" ] && [ -n "$IF_WPA_MAPPING_SCRIPT" ]; then
 		local WPA_MAP_STDIN
-		
+
 		WPA_MAP_STDIN=$(set | sed -n 's/^\(IF_WPA_MAP[0-9]*\)=.*/echo \$\1/p')
-		
+
 		if [ -n "$WPA_MAP_STDIN" ]; then
 			WPA_LOGICAL_IFACE=$(eval "$WPA_MAP_STDIN" | "$IF_WPA_MAPPING_SCRIPT" "$WPA_IFACE")
-		else		
+		else
 			WPA_LOGICAL_IFACE=$("$IF_WPA_MAPPING_SCRIPT" "$WPA_IFACE")
 		fi
-		
+
 		if [ -n "$WPA_LOGICAL_IFACE" ]; then
 			wpa_msg log "mapping script result: $WPA_LOGICAL_IFACE"
 		else
@@ -955,9 +955,9 @@ ifup () {
 
 		if [ -n "$IFSTATE_FILE" ] && grep -q "^$WPA_IFACE=$WPA_IFACE" "$IFSTATE_FILE"; then
 			# Force settings over the unconfigured "master" IFACE
-			/sbin/ifup -v --force "$WPA_IFACE=$WPA_LOGICAL_IFACE"
+			env -i -- /sbin/ifup -v --force "$WPA_IFACE=$WPA_LOGICAL_IFACE"
 		else
-			/sbin/ifup -v "$WPA_IFACE=$WPA_LOGICAL_IFACE"
+			env -i -- /sbin/ifup -v "$WPA_IFACE=$WPA_LOGICAL_IFACE"
 		fi
 		IFUP_RETVAL="$?"
 
@@ -991,7 +991,7 @@ ifdown () {
 
 #####################################################################
 ## keep IFACE scanning
-# After ifdown, the IFACE may be left "down", and inhibits 
+# After ifdown, the IFACE may be left "down", and inhibits
 # wpa_supplicant's ability to continue roaming.
 #
 # NB: use iproute if present, flushing the IFACE first
